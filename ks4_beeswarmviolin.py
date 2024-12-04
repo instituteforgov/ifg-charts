@@ -40,16 +40,3 @@ sns.swarmplot(
 )
 
 # %%
-sns.violinplot(
-    x='pt_l2basics_94',
-    y='region_name',
-    data=df.sort_values('pt_l2basics_94'),
-    hue='region_name',
-)
-
-# %%
-df.loc[
-    df['region_name'] == 'North West',
-].sort_values('pt_l2basics_94')[['la_name', 'pt_l2basics_94']]
-
-# %%
