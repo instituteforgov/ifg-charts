@@ -1,4 +1,5 @@
 # %%
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
@@ -30,13 +31,20 @@ df.loc[
 ] = pd.to_numeric(df['pt_l2basics_94'], errors='raise')
 
 # %%
+# PRODUCE CHART
+fig, ax = plt.subplots()
+
+# Set axis min and max
+ax.set_xlim(0, 100)
+
+# Produce chart
 sns.swarmplot(
     x='pt_l2basics_94',
     y='region_name',
     data=df.sort_values('pt_l2basics_94'),
     dodge=True,
     hue='region_name',
-    size=8,
+    size=5,
 )
 
 # %%
