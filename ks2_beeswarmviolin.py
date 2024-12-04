@@ -41,11 +41,3 @@ sns.swarmplot(
 )
 
 # %%
-sns.violinplot(
-    x='pt_rwm_met_expected_standard',
-    y='region_name',
-    data=df.sort_values('pt_rwm_met_expected_standard'),
-    hue='region_name',
-)
-
-# %%
