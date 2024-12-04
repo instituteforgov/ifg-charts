@@ -62,4 +62,7 @@ ax.set_xlim(0, 100)
 # Set axis label
 ax.set_ylabel('')
 
+# Add vertical gridlines
+ax.xaxis.grid(True)
+
 # %%
