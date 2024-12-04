@@ -64,4 +64,8 @@ ax.set_ylabel('')
 # Add vertical gridlines
 ax.xaxis.grid(True)
 
+# Remove axis tick marks
+ax.xaxis.set_ticks_position('none')
+ax.yaxis.set_ticks_position('none')
+
 # %%
