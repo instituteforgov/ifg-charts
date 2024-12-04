@@ -34,9 +34,6 @@ df.loc[
 # PRODUCE CHART
 fig, ax = plt.subplots()
 
-# Set axis min and max
-ax.set_xlim(0, 100)
-
 # Produce chart
 sns.swarmplot(
     x='pt_l2basics_94',
@@ -46,5 +43,11 @@ sns.swarmplot(
     hue='region_name',
     size=5,
 )
+
+# Set axis min and max
+ax.set_xlim(0, 100)
+
+# Set axis label
+ax.set_ylabel('')
 
 # %%
