@@ -24,6 +24,18 @@ df = df[df['geographic_level'] == 'Local authority']
 df = df[df['gender'] == 'Total']
 
 # %%
+# Merge Inner London and Outer London
+df.loc[
+    df['region_name'] == 'Inner London',
+    'region_name'
+] = 'London'
+
+df.loc[
+    df['region_name'] == 'Outer London',
+    'region_name'
+] = 'London'
+
+# %%
 # Convert pt_l2basics_94 to numeric
 df.loc[
     :,
