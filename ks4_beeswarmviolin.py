@@ -68,4 +68,10 @@ ax.xaxis.grid(True)
 ax.xaxis.set_ticks_position('none')
 ax.yaxis.set_ticks_position('none')
 
+# Remove border
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['bottom'].set_visible(False)
+ax.spines['left'].set_visible(False)
+
 # %%
