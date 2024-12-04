@@ -35,7 +35,6 @@ sns.swarmplot(
     x='pt_rwm_met_expected_standard',
     y='region_name',
     data=df.sort_values('pt_rwm_met_expected_standard'),
-    dodge=True,
     hue='region_name',
     size=8,
 )

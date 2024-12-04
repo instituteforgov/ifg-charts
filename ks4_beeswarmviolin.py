@@ -51,7 +51,6 @@ sns.swarmplot(
     x='pt_l2basics_94',
     y='region_name',
     data=df.sort_values('pt_l2basics_94'),
-    dodge=True,
     hue='region_name',
     size=5,
 )
