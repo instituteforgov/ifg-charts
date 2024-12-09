@@ -1,6 +1,14 @@
 # %%
+import warnings
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+
+# %%
+# SET UP
+# Turn seaborn UserWarnings into exceptions
+warnings.filterwarnings("error", category=UserWarning, module="seaborn")
 
 # %%
 # LOAD DATA
@@ -31,12 +39,28 @@ df.loc[
 ] = pd.to_numeric(df['pt_rwm_met_expected_standard'], errors='raise')
 
 # %%
-sns.swarmplot(
-    x='pt_rwm_met_expected_standard',
-    y='region_name',
-    data=df.sort_values('pt_rwm_met_expected_standard'),
-    hue='region_name',
-    size=8,
-)
+# PRODUCE CHART
+fig, ax = plt.subplots()
+
+# %%
+# Produce chart
+dot_size = 10
+
+while dot_size > 0:
+    try:
+        plt.clf()
+        sns.swarmplot(
+            x='pt_rwm_met_expected_standard',
+            y='region_name',
+            data=df.sort_values('pt_rwm_met_expected_standard'),
+            hue='region_name',
+            size=dot_size,
+        )
+    except UserWarning:
+        dot_size -= 0.5
+        pass
+    else:
+        print(f"Dot size: {dot_size}")
+        break
 
 # %%
