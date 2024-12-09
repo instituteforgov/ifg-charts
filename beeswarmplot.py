@@ -44,6 +44,12 @@ dataset = 'ks4_revised_2023'
 df = pd.read_csv(dataset_parameters[dataset]['file_path'])
 
 # %%
+[
+    'region_name',
+    'pt_l2basics_94',
+]
+
+# %%
 # EDIT DATA
 # Restrict to 202223
 df = df[df['time_period'] == dataset_parameters[dataset]['time_period']]
@@ -86,9 +92,6 @@ while dot_size > 0:
         # Set axis min and max
         plt.xlim(0, 100)
 
-        # Set axis label
-        plt.ylabel('')
-
         # Add vertical gridlines
         plt.grid(axis='x')
 
@@ -111,6 +114,12 @@ while dot_size > 0:
             hue='region_name',
             size=dot_size,
         )
+
+        # Set axis label
+        # NB: This needs to be after creation of the plot,
+        # otherwise default labels are added
+        plt.xlabel('')
+        plt.ylabel('')
 
     except UserWarning:
         dot_size -= 0.5
