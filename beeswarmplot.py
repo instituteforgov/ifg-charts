@@ -78,14 +78,32 @@ df.loc[
 
 # %%
 # PRODUCE CHART
-fig, ax = plt.subplots()
-
-# Produce chart
 dot_size = 10
 
 while dot_size > 0:
     try:
-        plt.clf()
+
+        # Set axis min and max
+        plt.xlim(0, 100)
+
+        # Set axis label
+        plt.ylabel('')
+
+        # Add vertical gridlines
+        plt.grid(axis='x')
+
+        # Remove axis tick marks
+        plt.tick_params(
+            axis='both',
+            which='both',
+            bottom=False,
+            left=False,
+        )
+
+        # Remove border
+        plt.box(False)
+
+        # Produce plot
         sns.swarmplot(
             x=dataset_parameters[dataset]['value_metric'],
             y='region_name',
@@ -93,30 +111,14 @@ while dot_size > 0:
             hue='region_name',
             size=dot_size,
         )
+
     except UserWarning:
         dot_size -= 0.5
+        plt.clf()
         pass
+
     else:
         print(f"Dot size: {dot_size}")
         break
-
-# Set axis min and max
-ax.set_xlim(0, 100)
-
-# Set axis label
-ax.set_ylabel('')
-
-# Add vertical gridlines
-ax.xaxis.grid(True)
-
-# Remove axis tick marks
-ax.xaxis.set_ticks_position('none')
-ax.yaxis.set_ticks_position('none')
-
-# Remove border
-ax.spines['top'].set_visible(False)
-ax.spines['right'].set_visible(False)
-ax.spines['bottom'].set_visible(False)
-ax.spines['left'].set_visible(False)
 
 # %%
