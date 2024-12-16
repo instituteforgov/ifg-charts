@@ -90,40 +90,45 @@ df_colours['colour_rgb'] = df_colours['colour_rgb'].apply(
 
 # %%
 # EDIT DATA
-# Restrict to 202223
-df = df[df['time_period'] == dataset_parameters[dataset]['time_period']]
+# Copy df
+df_points = df.copy()
+
+# Restrict to selected time period
+df_points = df_points[df_points['time_period'] == dataset_parameters[dataset]['time_period']]
 
 # %%
-# Restrict to LA-level
-df = df[df['geographic_level'] == dataset_parameters[dataset]['geographic_level']]
+# Restrict to selected geographic level
+df_points = df_points[
+    df_points['geographic_level'] == dataset_parameters[dataset]['geographic_level']
+]
 
 # %%
 # Restrict to Total gender
-df = df[df['gender'] == dataset_parameters[dataset]['gender']]
+df_points = df_points[df_points['gender'] == dataset_parameters[dataset]['gender']]
 
 # %%
 # Merge Inner London and Outer London
 if dataset == 'ks4_revised_2023':
-    df.loc[
-        df['region_name'] == 'Inner London',
+    df_points.loc[
+        df_points['region_name'] == 'Inner London',
         'region_name'
     ] = 'London'
 
-    df.loc[
-        df['region_name'] == 'Outer London',
+    df_points.loc[
+        df_points['region_name'] == 'Outer London',
         'region_name'
     ] = 'London'
 
 # %%
 # Convert metric to numeric
-df.loc[
+df_points.loc[
     :,
     dataset_parameters[dataset]['value_metric']
-] = pd.to_numeric(df[dataset_parameters[dataset]['value_metric']], errors='raise')
+] = pd.to_numeric(df_points[dataset_parameters[dataset]['value_metric']], errors='raise')
 
 # %%
 # CALCULATE AVERAGES
-df_avgs = df.groupby(
+df_avgs = df_points.groupby(
     dataset_parameters[dataset]['group_by']
 )[dataset_parameters[dataset]['value_metric']].agg("median").reset_index()
 
@@ -131,7 +136,7 @@ df_avgs = df.groupby(
 # CHECKS
 # Check number of averages matches number of groups
 assert \
-    df_avgs.shape[0] == df[dataset_parameters[dataset]['group_by']].nunique(), \
+    df_avgs.shape[0] == df_points[dataset_parameters[dataset]['group_by']].nunique(), \
     "Number of averages does not match number of groups"
 
 # %%
@@ -178,10 +183,10 @@ while dot_size > 0:
         sns.swarmplot(
             x=dataset_parameters[dataset]['value_metric'],
             y=dataset_parameters[dataset]['group_by'],
-            data=df.sort_values(dataset_parameters[dataset]['value_metric']),
+            data=df_points.sort_values(dataset_parameters[dataset]['value_metric']),
             hue=dataset_parameters[dataset]['group_by'],
             palette=df_colours.head(
-                df[dataset_parameters[dataset]['group_by']].nunique()
+                df_points[dataset_parameters[dataset]['group_by']].nunique()
             )['colour_rgb'].tolist(),
             size=dot_size,
             ax=ax
