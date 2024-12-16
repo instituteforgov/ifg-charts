@@ -1,4 +1,34 @@
 # %%
+# !/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+    Purpose
+        Draw a beeswarm plot
+    Inputs
+        - csv: 'ks2_regional_and_local_authority_2016_to_2023_revised.csv'
+            - 2022-23 KS2 results data
+        - csv: '2223_la_data_revised.csv'
+            - 2022-23 KS4 results data
+        - pkl: 'data/ifg_palette.pkl'
+            - IfG colour palette
+    Outputs
+        None
+    Parameters
+        - dataset_parameters
+            - file_path: Path to dataset
+            - time_period: Time period to use
+            - geographic_level: Geographic level to use
+            - gender: Gender to use
+            - value_metric: Metric to use
+            - group_by: Group by column
+        - dataset: Dataset to use
+    Notes
+        - Categories are ordered by
+            - Average, where averages are applied
+            - Lowest value, where they are not
+"""
+
 import os
 import warnings
 
