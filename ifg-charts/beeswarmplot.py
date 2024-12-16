@@ -122,6 +122,19 @@ df.loc[
 ] = pd.to_numeric(df[dataset_parameters[dataset]['value_metric']], errors='raise')
 
 # %%
+# CALCULATE AVERAGES
+df_avgs = df.groupby(
+    dataset_parameters[dataset]['group_by']
+)[dataset_parameters[dataset]['value_metric']].agg("median").reset_index()
+
+# %%
+# CHECKS
+# Check number of averages matches number of groups
+assert \
+    df_avgs.shape[0] == df[dataset_parameters[dataset]['group_by']].nunique(), \
+    "Number of averages does not match number of groups"
+
+# %%
 # PRODUCE CHART
 dot_size = 10
 
@@ -145,6 +158,22 @@ while dot_size > 0:
         # Remove border
         plt.box(False)
 
+        # Draw averages
+        if df_avgs is not None:
+            ax = sns.scatterplot(
+                x=dataset_parameters[dataset]['value_metric'],
+                y=dataset_parameters[dataset]['group_by'],
+                marker='|',
+                linewidth=2,
+                color='#333F48',
+                s=250,
+                zorder=4,
+                legend=False,
+                data=df_avgs
+            )
+        else:
+            ax = plt.gca()
+
         # Produce plot
         sns.swarmplot(
             x=dataset_parameters[dataset]['value_metric'],
@@ -155,6 +184,7 @@ while dot_size > 0:
                 df[dataset_parameters[dataset]['group_by']].nunique()
             )['colour_rgb'].tolist(),
             size=dot_size,
+            ax=ax
         )
 
         # Set axis label
