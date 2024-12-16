@@ -42,7 +42,7 @@ df['Colour'] = df['Colour'].ffill()
 
 # %%
 # Merge rows by Colour, turning columns into an 'rgh(x, y, z)' string
-df = df.groupby('Colour').agg(
+df = df.groupby('Colour', sort=False).agg(
     {
         'Darker 50%': lambda x: f"rgb({x.iloc[0]}, {x.iloc[1]}, {x.iloc[2]})",
         'Darker 25%': lambda x: f"rgb({x.iloc[0]}, {x.iloc[1]}, {x.iloc[2]})",
