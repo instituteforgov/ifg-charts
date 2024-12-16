@@ -23,6 +23,7 @@
             - value_metric: Metric to use
             - group_by: Group by column
         - dataset: Dataset to use
+        - average: Type of average to display overlaid onto beeswarm
     Notes
         - Categories are ordered by
             - Average, where averages are applied
@@ -71,6 +72,10 @@ dataset_parameters = {
 # %%
 # dataset = 'ks2_revised_2023'
 dataset = 'ks4_revised_2023'
+
+# %%
+# average = None
+average = 'median'
 
 # %%
 # LOAD DATA
@@ -158,16 +163,21 @@ df_points.loc[
 
 # %%
 # CALCULATE AVERAGES
-df_avgs = df_points.groupby(
-    dataset_parameters[dataset]['group_by']
-)[dataset_parameters[dataset]['value_metric']].agg("median").reset_index()
+if average == 'median':
+    df_avgs = df_points.groupby(
+        dataset_parameters[dataset]['group_by']
+    )[dataset_parameters[dataset]['value_metric']].agg("median").reset_index()
+
+else:
+    df_avgs = None
 
 # %%
 # CHECKS
 # Check number of averages matches number of groups
-assert \
-    df_avgs.shape[0] == df_points[dataset_parameters[dataset]['group_by']].nunique(), \
-    "Number of averages does not match number of groups"
+if average is not None:
+    assert \
+        df_avgs.shape[0] == df_points[dataset_parameters[dataset]['group_by']].nunique(), \
+        "Number of averages does not match number of groups"
 
 # %%
 # PRODUCE CHART
@@ -194,7 +204,7 @@ while dot_size > 0:
         plt.box(False)
 
         # Draw averages
-        if df_avgs is not None:
+        if average is not None:
             ax = sns.scatterplot(
                 x=dataset_parameters[dataset]['value_metric'],
                 y=dataset_parameters[dataset]['group_by'],
@@ -204,21 +214,31 @@ while dot_size > 0:
                 s=250,
                 zorder=4,
                 legend=False,
-                data=df_avgs
+                data=df_avgs.sort_values(
+                    dataset_parameters[dataset]['value_metric']
+                )
             )
+            order = None
         else:
             ax = plt.gca()
+
+            # Create order variable, ordering categories by lowest value
+            order = df_points.sort_values(
+                [dataset_parameters[dataset]['value_metric']],
+                ascending=True
+            )[dataset_parameters[dataset]['group_by']].unique()
 
         # Produce plot
         sns.swarmplot(
             x=dataset_parameters[dataset]['value_metric'],
             y=dataset_parameters[dataset]['group_by'],
-            data=df_points.sort_values(dataset_parameters[dataset]['value_metric']),
+            data=df_points,
             hue=dataset_parameters[dataset]['group_by'],
             palette=df_colours.head(
                 df_points[dataset_parameters[dataset]['group_by']].nunique()
             )['colour_rgb'].tolist(),
             size=dot_size,
+            order=order,
             ax=ax
         )
 
