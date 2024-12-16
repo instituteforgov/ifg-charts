@@ -8,7 +8,7 @@
     Inputs
         - xlsx: 'IfG colour palette.xlsx'
     Outputs
-        None
+        - pkl: 'data/ifg_palette.pkl'
     Parameters
         None
     Notes
@@ -73,10 +73,15 @@ df.columns = df.columns.str.replace(
 ).str.lower()
 
 # %%
-df
-
-# %%
-# Convert to dictionary
-df.set_index('colour').to_dict(orient='index')
+# SAVE DATA
+# Save to directory up one level
+df.to_pickle(
+    os.path.join(
+        '../',
+        os.path.dirname(os.getcwd()),
+        'data/',
+        'ifg_palette.pkl'
+    )
+)
 
 # %%
