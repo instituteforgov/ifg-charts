@@ -22,6 +22,7 @@ dataset_parameters = {
         'geographic_level': 'Local authority',
         'gender': 'Total',
         'value_metric': 'pt_rwm_met_expected_standard',
+        'group_by': 'region_name',
     },
     'ks4_revised_2023': {
         'file_path':
@@ -32,6 +33,7 @@ dataset_parameters = {
         'geographic_level': 'Local authority',
         'gender': 'Total',
         'value_metric': 'pt_l2basics_94',
+        'group_by': 'region_name',
     },
 }
 
@@ -42,12 +44,6 @@ dataset = 'ks4_revised_2023'
 # %%
 # LOAD DATA
 df = pd.read_csv(dataset_parameters[dataset]['file_path'])
-
-# %%
-[
-    'region_name',
-    'pt_l2basics_94',
-]
 
 # %%
 # EDIT DATA
@@ -109,9 +105,9 @@ while dot_size > 0:
         # Produce plot
         sns.swarmplot(
             x=dataset_parameters[dataset]['value_metric'],
-            y='region_name',
+            y=dataset_parameters[dataset]['group_by'],
             data=df.sort_values(dataset_parameters[dataset]['value_metric']),
-            hue='region_name',
+            hue=dataset_parameters[dataset]['group_by'],
             size=dot_size,
         )
 
