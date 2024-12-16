@@ -76,3 +76,7 @@ df.columns = df.columns.str.replace(
 df
 
 # %%
+# Convert to dictionary
+df.set_index('colour').to_dict(orient='index')
+
+# %%
