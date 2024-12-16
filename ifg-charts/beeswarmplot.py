@@ -1,4 +1,5 @@
 # %%
+import os
 import warnings
 
 import matplotlib.pyplot as plt
@@ -43,7 +44,49 @@ dataset = 'ks4_revised_2023'
 
 # %%
 # LOAD DATA
+# Data
 df = pd.read_csv(dataset_parameters[dataset]['file_path'])
+
+# %%
+# Colours
+df_colours = pd.read_pickle(
+    os.path.join(
+        '../',
+        os.path.dirname(os.getcwd()),
+        'data/',
+        'ifg_palette.pkl'
+    )
+)
+
+# Reshape
+df_colours = df_colours.melt(
+    id_vars='colour',
+    var_name='shade',
+    value_name='colour_rgb'
+)
+
+# Merge colour, shade columns
+df_colours.insert(0, 'colour_shade', pd.NA)
+df_colours['colour_shade'] = df_colours['colour'].str.cat(df_colours['shade'], sep='_')
+
+# Drop 'darker_50%' and 'darker_25%' rows
+df_colours = df_colours[
+    ~df_colours['shade'].isin([
+        'darker_50%',
+        'darker_25%',
+        'lighter_40%',
+    ])
+]
+
+# Drop colour and shade columns
+df_colours.drop(columns=['colour', 'shade'], inplace=True)
+
+# Convert colours to hex code
+df_colours['colour_rgb'] = df_colours['colour_rgb'].apply(
+    lambda x: x.replace('rgb(', '').replace(')', '').replace(' ', '').split(',')
+).apply(
+    lambda x: f"#{int(x[0]):02x}{int(x[1]):02x}{int(x[2]):02x}"
+)
 
 # %%
 # EDIT DATA
@@ -108,6 +151,9 @@ while dot_size > 0:
             y=dataset_parameters[dataset]['group_by'],
             data=df.sort_values(dataset_parameters[dataset]['value_metric']),
             hue=dataset_parameters[dataset]['group_by'],
+            palette=df_colours.head(
+                df[dataset_parameters[dataset]['group_by']].nunique()
+            )['colour_rgb'].tolist(),
             size=dot_size,
         )
 
