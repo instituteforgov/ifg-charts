@@ -23,6 +23,8 @@ def draw_beeswarm(
         - value_metric: The metric to plot
         - group_by: The column to group by
         - orientation: The orientation of the plot
+        - ax_min: The minimum value of the value axis
+        - ax_max: The maximum value of the value axis
         - averages: Averages to plot. Categories must match those in data
         - palette: The colour palette to use
 
