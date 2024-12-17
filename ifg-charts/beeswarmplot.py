@@ -33,9 +33,9 @@
 import os
 import warnings
 
-import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
+
+from functions import draw_beeswarm
 
 # %%
 # SET UP
@@ -204,80 +204,15 @@ if average is not None:
 
 # %%
 # PRODUCE CHART
-dot_size = 10
-
-while dot_size > 0:
-    try:
-
-        # Set axis min and max
-        plt.xlim(0, 100)
-
-        # Add vertical gridlines
-        plt.grid(axis='x')
-
-        # Remove axis tick marks
-        plt.tick_params(
-            axis='both',
-            which='both',
-            bottom=False,
-            left=False,
-        )
-
-        # Remove border
-        plt.box(False)
-
-        # Draw averages
-        if average is not None:
-            ax = sns.scatterplot(
-                x=dataset_parameters[dataset]['value_metric'],
-                y=dataset_parameters[dataset]['group_by'],
-                marker='|',
-                linewidth=2,
-                color='#333F48',
-                s=250,
-                zorder=4,
-                legend=False,
-                data=df_avgs.sort_values(
-                    dataset_parameters[dataset]['value_metric']
-                )
-            )
-            order = None
-        else:
-            ax = plt.gca()
-
-            # Create order variable, ordering categories by lowest value
-            order = df_points.sort_values(
-                [dataset_parameters[dataset]['value_metric']],
-                ascending=True
-            )[dataset_parameters[dataset]['group_by']].unique()
-
-        # Produce plot
-        sns.swarmplot(
-            x=dataset_parameters[dataset]['value_metric'],
-            y=dataset_parameters[dataset]['group_by'],
-            data=df_points,
-            hue=dataset_parameters[dataset]['group_by'],
-            palette=df_colours.head(
-                df_points[dataset_parameters[dataset]['group_by']].nunique()
-            )['colour_rgb'].tolist(),
-            size=dot_size,
-            order=order,
-            ax=ax
-        )
-
-        # Set axis label
-        # NB: This needs to be after creation of the plot,
-        # otherwise default labels are added
-        plt.xlabel('')
-        plt.ylabel('')
-
-    except UserWarning:
-        dot_size -= 0.5
-        plt.clf()
-        pass
-
-    else:
-        print(f"Dot size: {dot_size}")
-        break
+draw_beeswarm(
+    data=df_points,
+    value_metric=dataset_parameters[dataset]['value_metric'],
+    group_by=dataset_parameters[dataset]['group_by'],
+    orientation='horizontal',
+    averages=df_avgs,
+    palette=df_colours.head(
+        df_points[dataset_parameters[dataset]['group_by']].nunique()
+    )['colour_rgb'].tolist(),
+)
 
 # %%
