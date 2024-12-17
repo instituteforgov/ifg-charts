@@ -121,9 +121,7 @@ def draw_beeswarm(
                     s=250,
                     zorder=4,
                     legend=False,
-                    data=averages.sort_values(
-                        value_metric
-                    )
+                    data=averages
                 )
             else:
                 ax = plt.gca()
