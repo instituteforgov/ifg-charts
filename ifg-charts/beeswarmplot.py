@@ -211,6 +211,7 @@ draw_beeswarm(
     orientation='horizontal',
     ax_min=0,
     ax_max=100,
+    order='avg',
     averages=df_avgs,
     palette=df_colours.head(
         df_points[dataset_parameters[dataset]['group_by']].nunique()

@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -12,6 +12,7 @@ def draw_beeswarm(
     orientation: Literal['horizontal'] = 'horizontal',
     ax_min: Optional[int] = 0,
     ax_max: Optional[int] = 100,
+    order: Union[list | Literal['avg', 'min', 'max']] = 'avg',
     averages: Optional[pd.DataFrame] = None,
     palette: pd.DataFrame = None,
 ):
@@ -25,6 +26,8 @@ def draw_beeswarm(
         - orientation: The orientation of the plot
         - ax_min: The minimum value of the value axis
         - ax_max: The maximum value of the value axis
+        - order: The order of the categories. If 'avg', order by average value,
+        if 'min', order by minimum value, if 'max', order by maximum value
         - averages: Averages to plot. Categories must match those in data
         - palette: The colour palette to use
 
@@ -38,6 +41,51 @@ def draw_beeswarm(
         - Implement orientation='vertical'
     """
 
+    # Raise arg errors
+    if order == 'avg':
+        if averages is None:
+            raise ValueError("Averages must be provided to order by average")
+
+    # Handle ordering
+    if order == 'avg':
+        categories = averages.groupby(
+            group_by
+        )[value_metric].min().sort_values().index
+
+    elif order == 'min':
+        categories = data.groupby(
+            group_by
+        )[value_metric].min().sort_values().index
+
+    elif order == 'max':
+        categories = data.groupby(
+            group_by
+        )[value_metric].max().sort_values().index
+
+    elif isinstance(order, list):
+        categories = order
+
+    # Create a copy of the data
+    # NB: This fends off issues with ordering if the function is called
+    # multiple times on the same data
+    data = data.copy()
+    averages = averages.copy()
+
+    # Turn data, averages categories into categorical
+    data[group_by] = pd.Categorical(
+        data[group_by],
+        ordered=True,
+        categories=categories
+    )
+
+    if averages is not None:
+        averages[group_by] = pd.Categorical(
+            averages[group_by],
+            ordered=True,
+            categories=categories
+        )
+
+    # Produce chart
     dot_size = 10
 
     while dot_size > 0:
@@ -77,15 +125,8 @@ def draw_beeswarm(
                         value_metric
                     )
                 )
-                order = None
             else:
                 ax = plt.gca()
-
-                # Create order variable, ordering categories by lowest value
-                order = data.sort_values(
-                    [value_metric],
-                    ascending=True
-                )[group_by].unique()
 
             # Produce plot
             sns.swarmplot(
@@ -95,7 +136,7 @@ def draw_beeswarm(
                 hue=group_by,
                 palette=palette,
                 size=dot_size,
-                order=order,
+                order=categories,
                 ax=ax
             )
 
