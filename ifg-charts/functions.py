@@ -18,7 +18,7 @@ def draw_beeswarm(
     averages: Optional[pd.DataFrame] = None,
     average_label: Optional[str] = None,
     palette: pd.DataFrame = None,
-):
+) -> None:
     """
     Draw a beeswarm plot of the data.
 
