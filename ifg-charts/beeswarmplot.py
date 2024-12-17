@@ -209,6 +209,8 @@ draw_beeswarm(
     value_metric=dataset_parameters[dataset]['value_metric'],
     group_by=dataset_parameters[dataset]['group_by'],
     orientation='horizontal',
+    ax_min=0,
+    ax_max=100,
     averages=df_avgs,
     palette=df_colours.head(
         df_points[dataset_parameters[dataset]['group_by']].nunique()
