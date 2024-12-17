@@ -1,6 +1,7 @@
 from typing import Literal, Optional, Union
 
 import matplotlib.pyplot as plt
+import matplotlib.lines as mlines
 import pandas as pd
 import seaborn as sns
 
@@ -14,6 +15,7 @@ def draw_beeswarm(
     ax_max: Optional[int] = 100,
     order: Union[list | Literal['avg', 'min', 'max']] = 'avg',
     averages: Optional[pd.DataFrame] = None,
+    average_label: Optional[str] = None,
     palette: pd.DataFrame = None,
 ):
     """
@@ -29,6 +31,7 @@ def draw_beeswarm(
         - order: The order of the categories. If 'avg', order by average value,
         if 'min', order by minimum value, if 'max', order by maximum value
         - averages: Averages to plot. Categories must match those in data
+        - average_label: The label for the average line in the legend
         - palette: The colour palette to use
 
     Returns
@@ -45,6 +48,10 @@ def draw_beeswarm(
     if order == 'avg':
         if averages is None:
             raise ValueError("Averages must be provided to order by average")
+
+    if averages is not None:
+        if average_label is None:
+            raise ValueError("Average legend label must be provided if averages are provided")
 
     # Handle ordering
     if order == 'avg':
@@ -120,9 +127,21 @@ def draw_beeswarm(
                     color='#333F48',
                     s=250,
                     zorder=4,
-                    legend=False,
                     data=averages
                 )
+
+                # Add manual legend item
+                # NB: This is necessary because we only have a single category
+                # of average, meaning it will not appear in the legend
+                legend_line = mlines.Line2D(
+                    [], [],
+                    color='#333F48',
+                    label=average_label,
+                    linestyle='-',
+                    linewidth=2,
+                )
+                ax.legend(handles=[legend_line])
+
             else:
                 ax = plt.gca()
 

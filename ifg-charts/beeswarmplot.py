@@ -213,6 +213,7 @@ draw_beeswarm(
     ax_max=100,
     order='avg',
     averages=df_avgs,
+    average_label='Region total',
     palette=df_colours.head(
         df_points[dataset_parameters[dataset]['group_by']].nunique()
     )['colour_rgb'].tolist(),
