@@ -30,12 +30,11 @@
             - Lowest value, where they are not
 """
 
-import os
 import warnings
 
 import pandas as pd
 
-from functions import draw_beeswarm
+from functions import draw_beeswarm, load_colours
 
 # %%
 # SET UP
@@ -85,44 +84,17 @@ df = pd.read_csv(dataset_parameters[dataset]['file_path'])
 
 # %%
 # Colours
-df_colours = pd.read_pickle(
-    os.path.join(
-        '../',
-        os.path.dirname(os.getcwd()),
-        'data/',
-        'ifg_palette.pkl'
-    )
-)
+df_colours = load_colours()
 
-# Reshape
-df_colours = df_colours.melt(
-    id_vars='colour',
-    var_name='shade',
-    value_name='colour_rgb'
-)
-
-# Merge colour, shade columns
-df_colours.insert(0, 'colour_shade', pd.NA)
-df_colours['colour_shade'] = df_colours['colour'].str.cat(df_colours['shade'], sep='_')
-
-# Drop 'darker_50%' and 'darker_25%' rows
+# Drop 'darker_50%', 'darker_25%', 'lighter_40%' rows
 df_colours = df_colours[
-    ~df_colours['shade'].isin([
-        'darker_50%',
-        'darker_25%',
-        'lighter_40%',
-    ])
+    ~df_colours['colour_shade'].str.contains('|'.join(['darker_50%', 'darker_25%', 'lighter_40%']))
 ]
 
-# Drop colour and shade columns
-df_colours.drop(columns=['colour', 'shade'], inplace=True)
-
-# Convert colours to hex code
-df_colours['colour_rgb'] = df_colours['colour_rgb'].apply(
-    lambda x: x.replace('rgb(', '').replace(')', '').replace(' ', '').split(',')
-).apply(
-    lambda x: f"#{int(x[0]):02x}{int(x[1]):02x}{int(x[2]):02x}"
-)
+# Drop 'dark_grey' rows
+df_colours = df_colours[
+    ~df_colours['colour_shade'].str.contains('dark_grey')
+]
 
 # %%
 # EDIT DATA
@@ -216,7 +188,7 @@ draw_beeswarm(
     average_label='Region total',
     palette=df_colours.head(
         df_points[dataset_parameters[dataset]['group_by']].nunique()
-    )['colour_rgb'].tolist(),
+    )['colour_hex'].tolist(),
 )
 
 # %%

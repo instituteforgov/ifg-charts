@@ -1,3 +1,4 @@
+import os
 from typing import Literal, Optional, Union
 
 import matplotlib.pyplot as plt
@@ -174,3 +175,54 @@ def draw_beeswarm(
             break
 
     return
+
+
+def load_colours() -> pd.DataFrame:
+    """
+    Load IfG colour palette
+
+    Parameters
+        None
+
+    Returns
+        df_colours: A dataframe of colours with columns
+            - colour_shade: The colour and shade names concatenated (e.g.
+            blue_accent, grey_lighter_60%)
+            - colour_hex: The colour hex code
+
+    Notes
+        None
+    """
+
+    # Load colours
+    df_colours = pd.read_pickle(
+        os.path.join(
+            '../',
+            os.path.dirname(os.getcwd()),
+            'data/',
+            'ifg_palette.pkl'
+        )
+    )
+
+    # Reshape
+    df_colours = df_colours.melt(
+        id_vars='colour',
+        var_name='shade',
+        value_name='colour_rgb'
+    )
+
+    # Merge colour, shade columns
+    df_colours.insert(0, 'colour_shade', pd.NA)
+    df_colours['colour_shade'] = df_colours['colour'].str.cat(df_colours['shade'], sep='_')
+
+    # Drop colour and shade columns
+    df_colours.drop(columns=['colour', 'shade'], inplace=True)
+
+    # Convert colours to hex code
+    df_colours['colour_hex'] = df_colours['colour_rgb'].apply(
+        lambda x: x.replace('rgb(', '').replace(')', '').replace(' ', '').split(',')
+    ).apply(
+        lambda x: f"#{int(x[0]):02x}{int(x[1]):02x}{int(x[2]):02x}"
+    )
+
+    return df_colours
