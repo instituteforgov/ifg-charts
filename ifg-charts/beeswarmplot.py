@@ -75,7 +75,8 @@ dataset = 'ks4_revised_2023'
 
 # %%
 # average = None
-average = 'median'
+# average = 'median'
+average = 'data'
 
 # %%
 # LOAD DATA
@@ -167,6 +168,28 @@ if average == 'median':
     df_avgs = df_points.groupby(
         dataset_parameters[dataset]['group_by']
     )[dataset_parameters[dataset]['value_metric']].agg("median").reset_index()
+
+elif average == 'data':
+    df_avgs = df.copy()
+    df_avgs = df_avgs[df_avgs['time_period'] == dataset_parameters[dataset]['time_period']]
+    df_avgs = df_avgs[
+        df_avgs['geographic_level'] == 'Regional'
+    ]
+    df_avgs = df_avgs[df_avgs['gender'] == dataset_parameters[dataset]['gender']]
+
+    # Handle KS4 data
+    # NB: London comes pre-calculated at regional level (just all LAs are recorded
+    # against either Inner or Outer London)
+    if dataset == 'ks4_revised_2023':
+        df_avgs = df_avgs[
+            ~df_avgs['region_name'].isin(['Inner London', 'Outer London'])
+        ]
+
+    # Convert metric to numeric
+    df_avgs.loc[
+        :,
+        dataset_parameters[dataset]['value_metric']
+    ] = pd.to_numeric(df_avgs[dataset_parameters[dataset]['value_metric']], errors='raise')
 
 else:
     df_avgs = None
