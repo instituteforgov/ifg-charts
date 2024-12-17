@@ -30,7 +30,7 @@ def draw_beeswarm(
         None
 
     Notes
-        None
+        - This automatically scales dot size until it fits the plot
 
     Future enhancements
         - Implement orientation='vertical'
