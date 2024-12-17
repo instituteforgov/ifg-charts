@@ -76,7 +76,8 @@ def draw_beeswarm(
     # NB: This fends off issues with ordering if the function is called
     # multiple times on the same data
     data = data.copy()
-    averages = averages.copy()
+    if averages is not None:
+        averages = averages.copy()
 
     # Turn data, averages categories into categorical
     data[group_by] = pd.Categorical(
