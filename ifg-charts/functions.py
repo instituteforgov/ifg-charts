@@ -54,6 +54,22 @@ def draw_beeswarm(
         if average_label is None:
             raise ValueError("Average legend label must be provided if averages are provided")
 
+    if averages is not None:
+        assert \
+            all(
+                data[group_by].isin(averages[group_by])
+            ), "All categories in data must exist in averages"
+
+        assert \
+            all(
+                averages[group_by].isin(data[group_by])
+            ), "All categories in averages must exist in data"
+
+    if isinstance(order, list):
+        assert \
+            all(order) in data[group_by].unique().tolist(), \
+            "All categories in order must exist in data"
+
     # Handle ordering
     if order == 'avg':
         categories = averages.groupby(
