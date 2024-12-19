@@ -1,4 +1,6 @@
+*.png
 *.pyc
+*.svg
 
 temp*.py
 todo.txt

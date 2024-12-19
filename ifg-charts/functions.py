@@ -18,7 +18,7 @@ def draw_beeswarm(
     averages: Optional[pd.DataFrame] = None,
     average_label: Optional[str] = None,
     palette: pd.DataFrame = None,
-) -> None:
+) -> Optional[plt.Axes]:
     """
     Draw a beeswarm plot of the data.
 
@@ -36,7 +36,7 @@ def draw_beeswarm(
         - palette: The colour palette to use
 
     Returns
-        None
+        - ax: The plot axes or None if the plot could not be produced
 
     Notes
         - This automatically scales dot size until it fits the plot
@@ -188,7 +188,7 @@ def draw_beeswarm(
 
         else:
             print(f"Dot size: {dot_size}")
-            break
+            return ax
 
     return
 
