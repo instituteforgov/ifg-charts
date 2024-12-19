@@ -67,7 +67,7 @@ def draw_beeswarm(
 
     if isinstance(order, list):
         assert \
-            all(order) in data[group_by].unique().tolist(), \
+            all(i in order for i in data[group_by].unique()), \
             "All categories in order must exist in data"
 
     # Handle ordering
